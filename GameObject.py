@@ -24,9 +24,9 @@ class GameObject:
             self.draw_holder.append(component.draw)
 
 
-    def update(self):
+    def update(self, deltaTime):
         for event in self.update_holder:
-            event()
+            event(deltaTime)
 
     def draw(self, screen):
         for event in self.draw_holder:

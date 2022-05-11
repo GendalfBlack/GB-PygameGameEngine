@@ -10,8 +10,8 @@ game.init(s)
 obj = game.add_new_GameObject()
 obj.addComponent(Physics2d(obj))
 obj.addComponent(SimpleShape(obj))
-obj.transform.position.x = 100
-obj.transform.position.y = 100
+obj.transform.position = Vector2(100, 100)
+obj.components[1].velocity = Vector2(50, 50)
 
 running = True
 while running:

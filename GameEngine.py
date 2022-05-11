@@ -52,6 +52,6 @@ class Game:
 
     def add_new_GameObject(self):
         go = GameObject()
-        self.update_holder.append(go.update)
+        self.update_holder.append(lambda : go.update(self.deltaTime))
         self.draw_holder.append(lambda : go.draw(self.screen))
         return go
