@@ -12,6 +12,7 @@ while running:
         if e.type == p.QUIT:
             running = False
     s.fill((255,255,255))
+    g.Frame()
     p.display.flip()
 
 p.quit()
