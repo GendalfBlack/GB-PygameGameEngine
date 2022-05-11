@@ -8,21 +8,23 @@ class GameObject:
         if len(args) == 0:
             self.name = "null"
             self.tag = "null"
-        self.components = [Transform(self)]
-        self.transform = self.components[0]
-        self.update_holder = [self.transform.update]
+        self.components = []
+        self.update_holder = []
         self.draw_holder = []
+        self.addComponent("Transform")
+        self.transform = self.components[0]
 
     def addComponent(self, component):
+        component = eval(component+"()")
         if issubclass(component.__class__, Component):
             self.components.append(component)
+            component._owner = self
         else:
             raise Exception('You added non component entity. Inherit "Component" class.')
         if issubclass(component.__class__, BasicComponent):
             self.update_holder.append(component.update)
         if issubclass(component.__class__, GraphicComponent):
             self.draw_holder.append(component.draw)
-
 
     def update(self, deltaTime):
         for event in self.update_holder:

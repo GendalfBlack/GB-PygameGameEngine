@@ -1,6 +1,5 @@
 import pygame as p
 import GameEngine
-from Components import *
 
 p.init()
 s = p.display.set_mode([800,600])
@@ -8,10 +7,10 @@ s = p.display.set_mode([800,600])
 game = GameEngine.Game()
 game.init(s)
 obj = game.add_new_GameObject()
-obj.addComponent(Physics2d(obj))
-obj.addComponent(SimpleShape(obj))
-obj.transform.position = Vector2(100, 100)
-obj.components[1].velocity = Vector2(50, 50)
+obj.addComponent("Physics2d")
+obj.addComponent("SimpleShape")
+obj.transform.position = p.Vector2(100, 100)
+obj.components[1].velocity = p.Vector2(50, 50)
 
 running = True
 while running:

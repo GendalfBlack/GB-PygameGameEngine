@@ -19,15 +19,10 @@ class Component:
         return self._owner
 
     def __init__(self, *args, **kargs):
-        self._owner = None
         if len(args) == 0:
             self.name = "Basic component"
         else:
             self.name = args[0]
-        if "owner" in kargs:
-            self._Owner = kargs["owner"]
-        else:
-            raise Exception(f"There is no owner for this component. {self.name}")
 
 
 class BasicComponent(Component):
@@ -46,11 +41,11 @@ class GraphicComponent(Component):
 
 # 2d
 class Transform(BasicComponent):
-    def __init__(self, _object):
+    def __init__(self):
         self.position = Vector2()
         self.rotation = 0
         self.scale = Vector2()
-        super().__init__("Transform", owner=_object)
+        super().__init__("Transform")
 
     def update(self, deltaTime=0):
         # print("transform update")
@@ -58,9 +53,9 @@ class Transform(BasicComponent):
 
 
 class Physics2d(BasicComponent):
-    def __init__(self, _object):
+    def __init__(self):
         self.velocity = Vector2()
-        super().__init__("Physics2d", owner=_object)
+        super().__init__("Physics2d")
 
     def update(self, deltaTime=0):
         # print("Physics2d update")
@@ -68,12 +63,12 @@ class Physics2d(BasicComponent):
 
 
 class SimpleShape(GraphicComponent):
-    def __init__(self, _object, shape="circle"):
+    def __init__(self, shape="circle"):
         self.shape = shape
         self.color = (0, 0, 0)
         self.size = 10
         self.rect = None
-        super(SimpleShape, self).__init__("SimpleShape", owner=_object)
+        super(SimpleShape, self).__init__("SimpleShape")
 
     def update(self):
         pass
