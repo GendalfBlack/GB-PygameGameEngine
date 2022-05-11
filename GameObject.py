@@ -1,6 +1,5 @@
 import pygame as p
 import random as rnd
-from Vector2d import Vector
 from Components import *
 
 
