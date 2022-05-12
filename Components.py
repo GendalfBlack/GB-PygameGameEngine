@@ -41,8 +41,23 @@ class GraphicComponent(Component):
 
 # 2d
 class Transform(BasicComponent):
+
+    @property
+    def position(self):
+        return self._position
+
+    @position.setter
+    def position(self, value):
+        if type(value) is tuple:
+            self._position.x = value[0]
+            self._position.y = value[1]
+        elif type(value) is Vector2:
+            self._position = value
+        else:
+            raise Exception(f"Invalid type for position. {type(value)} is provided. Needs to be pair of numbers, or Vector2")
+
     def __init__(self):
-        self.position = Vector2()
+        self._position = Vector2()
         self.rotation = 0
         self.scale = Vector2()
         super().__init__("Transform")
@@ -53,13 +68,28 @@ class Transform(BasicComponent):
 
 
 class Physics2d(BasicComponent):
+    @property
+    def velocity(self):
+        return self._velocity
+
+    @velocity.setter
+    def velocity(self, value):
+        if type(value) is tuple:
+            self._velocity.x = value[0]
+            self._velocity.y = value[1]
+        elif type(value) is Vector2:
+            self._velocity = value
+        else:
+            raise Exception(
+                f"Invalid type for velocity. {type(value)} is provided. Needs to be pair of numbers, or Vector2")
+
     def __init__(self):
-        self.velocity = Vector2()
+        self._velocity = Vector2()
         super().__init__("Physics2d")
 
     def update(self, deltaTime=0):
         # print("Physics2d update")
-        self._Owner.transform.position += self.velocity * deltaTime
+        self._Owner.transform._position += self._velocity * deltaTime
 
 
 class SimpleShape(GraphicComponent):
@@ -75,4 +105,4 @@ class SimpleShape(GraphicComponent):
 
     def draw(self, screen):
         if self.shape == "circle":
-            self.rect = eval("draw."+self.shape+"(screen, self.color, self._Owner.transform.position, self.size)")
+            self.rect = eval("draw."+self.shape+"(screen, self.color, self._Owner.transform._position, self.size)")
