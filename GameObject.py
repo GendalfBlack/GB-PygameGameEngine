@@ -33,3 +33,9 @@ class GameObject:
     def draw(self, screen):
         for event in self.draw_holder:
             event(screen)
+
+    def getComponent(self, t):
+        for component in self.components:
+            if type(component) is eval(t):
+                return component
+        raise Exception(f"There is no component {t} attachet to this object")
