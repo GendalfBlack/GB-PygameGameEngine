@@ -11,6 +11,7 @@ for i in range(10):
     obj.transform.position = (rnd.randint(100,700), 100)
 
     obj.getComponent("Physics2d").applyForce((rnd.randint(-100,100),rnd.randint(-100,100)))
+    obj.getComponent("Physics2d").mass = rnd.randint(1,10)
     obj.getComponent("Physics2d").gravity = True
 
 game.run()
