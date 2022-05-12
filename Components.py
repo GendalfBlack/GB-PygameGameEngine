@@ -85,10 +85,14 @@ class Physics2d(BasicComponent):
 
     def __init__(self):
         self._velocity = Vector2()
+        self.gravity = False
         super().__init__("Physics2d")
 
     def update(self, deltaTime=0):
         # print("Physics2d update")
+        if self.gravity:
+            if self._velocity.y < 98:
+                self.applyForce(Vector2(0, 98) * deltaTime)
         self._Owner.transform.position += self._velocity * deltaTime
 
     def applyForce(self, force):
