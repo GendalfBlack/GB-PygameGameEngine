@@ -14,6 +14,23 @@ class Game:
         self.update_holder = []
         self.update_holder.append(self.frameReference.tick)
         self.draw_holder = []
+        self.ableCustomUpdate = True
+
+    @property
+    def my_update(self):
+        return self._update()
+
+    @my_update.setter
+    def my_update(self, function):
+        if callable(function):
+            if self.ableCustomUpdate:
+                self.update_holder.append(function)
+                self.ableCustomUpdate = False
+            else:
+                raise Exception(f"You already applied custom function to update. Must be only one.")
+        else:
+            raise Exception(f"Error while trying to add non callable object to update cycle.")
+
 
     @property
     def deltaTime(self):
@@ -60,12 +77,12 @@ class Game:
                 if e.type == p.QUIT:
                     running = False
             self.screen.fill((255, 255, 255))
-            self.update()
+            self._update()
             p.display.flip()
 
         p.quit()
 
-    def update(self):
+    def _update(self):
         for event in self.update_holder:
             event()
         for draw in self.draw_holder:

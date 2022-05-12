@@ -91,6 +91,14 @@ class Physics2d(BasicComponent):
         # print("Physics2d update")
         self._Owner.transform.position += self._velocity * deltaTime
 
+    def applyForce(self, force):
+        if type(force) is tuple:
+            self._velocity.x += force[0]
+            self._velocity.y += force[1]
+        elif type(force) is Vector2:
+            self._velocity += force
+        else:
+            raise Exception(f"Can not apply force which not a pair of numbers(tuple), or not a Vector2. {type(force)} was given.")
 
 class SimpleShape(GraphicComponent):
     def __init__(self, shape="circle"):
