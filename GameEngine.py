@@ -4,8 +4,12 @@ from GameObject import GameObject
 class Game:
 
     def __init__(self):
-        self.version = "0.1"
+        p.init()
+        self.version = "dev 0.1"
         self.mainfont = p.font.SysFont("Consolas", 24)
+
+        self.screen = None
+
         self.frameReference = p.time.Clock()
         self.update_holder = []
         self.update_holder.append(self.frameReference.tick)
@@ -40,9 +44,26 @@ class Game:
     def fps(self, val):
         raise Exception("This is readonly variable.")
 
-    def init(self, screen):
+    def init(self, screen_size):
         print(f"Game version: " + self.version)
-        self.screen = screen
+        if type(screen_size) is list and len(screen_size) == 2:
+            self.screen = p.display.set_mode([screen_size[0],screen_size[1]])
+        elif type(screen_size) is str and 'x' in screen_size:
+            self.screen = p.display.set_mode([int(screen_size[:screen_size.find('x')]), int(screen_size[screen_size.find('x')+1:])])
+        else:
+            raise Exception(f'Screen size must be list [width, size] or "WIDTHxHEIGHT" string. {type(screen_size)} was given.')
+
+    def run(self):
+        running = True
+        while running:
+            for e in p.event.get():
+                if e.type == p.QUIT:
+                    running = False
+            self.screen.fill((255, 255, 255))
+            self.update()
+            p.display.flip()
+
+        p.quit()
 
     def update(self):
         for event in self.update_holder:

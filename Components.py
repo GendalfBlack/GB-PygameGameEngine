@@ -89,7 +89,7 @@ class Physics2d(BasicComponent):
 
     def update(self, deltaTime=0):
         # print("Physics2d update")
-        self._Owner.transform._position += self._velocity * deltaTime
+        self._Owner.transform.position += self._velocity * deltaTime
 
 
 class SimpleShape(GraphicComponent):
@@ -104,5 +104,6 @@ class SimpleShape(GraphicComponent):
         pass
 
     def draw(self, screen):
+        # print("SimpleShape draw")
         if self.shape == "circle":
-            self.rect = eval("draw."+self.shape+"(screen, self.color, self._Owner.transform._position, self.size)")
+            self.rect = eval("draw."+self.shape+"(screen, self.color, self._Owner.transform.position, self.size)")
