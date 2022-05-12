@@ -1,20 +1,8 @@
 import pygame as p
 from GameObject import GameObject
+from Resource import IngameResource
 
 class Game:
-
-    def __init__(self):
-        p.init()
-        self.version = "dev 0.1"
-        self.mainfont = p.font.SysFont("Consolas", 24)
-
-        self.screen = None
-
-        self.frameReference = p.time.Clock()
-        self.update_holder = []
-        self.update_holder.append(self.frameReference.tick)
-        self.draw_holder = []
-        self.ableCustomUpdate = True
 
     @property
     def my_update(self):
@@ -30,7 +18,6 @@ class Game:
                 raise Exception(f"You already applied custom function to update. Must be only one.")
         else:
             raise Exception(f"Error while trying to add non callable object to update cycle.")
-
 
     @property
     def deltaTime(self):
@@ -70,6 +57,23 @@ class Game:
         else:
             raise Exception(f'Screen size must be list [width, size] or "WIDTHxHEIGHT" string. {type(screen_size)} was given.')
 
+    def __init__(self):
+        p.init()
+        self.version = "dev 0.1"
+        self.mainfont = p.font.SysFont("Arial", 24)
+
+        self.screen = None
+
+        self.resources = {}
+        self.resources_line = ""
+        self.resources_text = None
+
+        self.frameReference = p.time.Clock()
+        self.update_holder = []
+        self.update_holder.append(self.frameReference.tick)
+        self.draw_holder = []
+        self.ableCustomUpdate = True
+
     def run(self):
         running = True
         while running:
@@ -82,7 +86,16 @@ class Game:
 
         p.quit()
 
+    def update_resources(self):
+        self.resources_line = ""
+        for res in self.resources:
+            if not self.resources[res].hide:
+                self.resources_line += f"{self.resources[res].name}: {self.resources[res].amount} "
+        self.resources_text = self.mainfont.render(self.resources_line, False, (0, 0, 0))
+
     def _update(self):
+        if self.resources_text is not None:
+            self.screen.blit(self.resources_text, (0, 0))
         for event in self.update_holder:
             event()
         for draw in self.draw_holder:
@@ -90,6 +103,12 @@ class Game:
 
     def add_new_GameObject(self):
         go = GameObject()
-        self.update_holder.append(lambda : go.update(self.deltaTime))
-        self.draw_holder.append(lambda : go.draw(self.screen))
+        self.update_holder.append(lambda: go.update(self.deltaTime))
+        self.draw_holder.append(lambda: go.draw(self.screen))
         return go
+
+    def add_new_Resource(self, name):
+        r = IngameResource()
+        r.name = name
+        self.resources[name] = r
+        self.update_resources()

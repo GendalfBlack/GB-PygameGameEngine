@@ -32,12 +32,14 @@ class BasicComponent(Component):
     def update(self, deltaTime=0):
         pass
 
+
 class GraphicComponent(Component):
     def __init__(self, *args, **kargs):
         super(GraphicComponent, self).__init__(*args, **kargs)
 
     def draw(self, screen):
         pass
+
 
 # 2d
 class Transform(BasicComponent):
@@ -104,6 +106,7 @@ class Physics2d(BasicComponent):
             self._velocity += force
         else:
             raise Exception(f"Can not apply force which not a pair of numbers(tuple), or not a Vector2. {type(force)} was given.")
+
 
 class SimpleShape(GraphicComponent):
     def __init__(self, shape="circle"):

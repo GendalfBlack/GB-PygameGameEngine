@@ -38,4 +38,4 @@ class GameObject:
         for component in self.components:
             if type(component) is eval(t):
                 return component
-        raise Exception(f"There is no component {t} attachet to this object")
+        raise Exception(f"There is no component {t} attached to this object")
