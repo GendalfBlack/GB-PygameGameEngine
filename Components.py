@@ -108,6 +108,13 @@ class Physics2d(BasicComponent):
             raise Exception(f"Can not apply force which not a pair of numbers(tuple), or not a Vector2. {type(force)} was given.")
 
 
+class BoxCollider(BasicComponent):
+    def __init__(self):
+        self.size = Vector2()
+        self.offset = Vector2()
+        super().__init__("BoxCollider")
+
+
 class SimpleShape(GraphicComponent):
     shapes = ["circle", "square", "line"]
 
