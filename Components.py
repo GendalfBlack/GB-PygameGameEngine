@@ -116,6 +116,7 @@ class SimpleShape(GraphicComponent):
         self.color = (0, 0, 0)
         self.size = 10
         self.rect = None
+        self.width = 2
         super(SimpleShape, self).__init__("SimpleShape")
 
     def update(self):
@@ -124,8 +125,14 @@ class SimpleShape(GraphicComponent):
     def draw(self, screen):
         # print("SimpleShape draw")
         if self.shape == "circle":
-            self.rect = eval("draw."+self.shape+"(screen, self.color, self._Owner.transform.position, self.size)")
+            pos = self._Owner.transform.position
+            self.rect = eval("draw.circle(screen, self.color, pos, self.size, width=self.width)")
         elif self.shape == "square":
             x = self._Owner.transform.position.x
             y = self._Owner.transform.position.y
-            self.rect = eval("draw.rect(screen, self.color, (x, y, self.size, self.size))")
+            rect = (x - self.size / 2, y - self.size / 2, self.size, self.size)
+            self.rect = eval("draw.rect(screen, self.color, rect, width=self.width)")
+        elif self.shape == "line":
+            x = self._Owner.transform.position.x
+            y = self._Owner.transform.position.y
+            self.rect = eval("draw.line(screen, self.color, (x - self.size/2, y), (x + self.size/2, y), width=self.width)")

@@ -12,7 +12,7 @@ for i in range(10):
     obj.transform.position = (rnd.randint(100, 700), 100)
 
     obj.addComponent("SimpleShape")
-    obj.getComponent("SimpleShape").shape = "square"
+    obj.getComponent("SimpleShape").shape = rnd.choice(GameEngine.Game.SIMPLE_SHAPES)
 
     obj.addComponent("Physics2d")
     obj.getComponent("Physics2d").applyForce((rnd.randint(-100,100),rnd.randint(-100,100)))

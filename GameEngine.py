@@ -1,8 +1,11 @@
 import pygame as p
 from GameObject import GameObject
-from Resource import IngameResource
+from Resource import InGameResource
+
 
 class Game:
+    # consts
+    SIMPLE_SHAPES = GameObject.SIMPLE_SHAPES
 
     @property
     def my_update(self):
@@ -108,7 +111,8 @@ class Game:
         return go
 
     def add_new_Resource(self, name):
-        r = IngameResource()
+        r = InGameResource()
         r.name = name
+        r.update = self.update_resources
         self.resources[name] = r
         self.update_resources()
