@@ -77,6 +77,8 @@ class Game:
         self.draw_holder = []
         self.ableCustomUpdate = True
 
+        self.show_fps = False
+
     def run(self):
         running = True
         while running:
@@ -85,6 +87,11 @@ class Game:
                     running = False
             self.screen.fill((255, 255, 255))
             self._update()
+
+            if self.show_fps:
+                t = self.mainfont.render(f"fps:{self.fps//1}", False, (255, 255, 255))
+                p.draw.rect(self.screen, (0, 0, 0), t.get_rect())
+                self.screen.blit(t, (0, 0))
             p.display.flip()
 
         p.quit()
