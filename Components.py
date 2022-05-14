@@ -109,6 +109,8 @@ class Physics2d(BasicComponent):
 
 
 class SimpleShape(GraphicComponent):
+    shapes = ["circle", "square", "line"]
+
     def __init__(self, shape="circle"):
         self.shape = shape
         self.color = (0, 0, 0)
@@ -123,3 +125,7 @@ class SimpleShape(GraphicComponent):
         # print("SimpleShape draw")
         if self.shape == "circle":
             self.rect = eval("draw."+self.shape+"(screen, self.color, self._Owner.transform.position, self.size)")
+        elif self.shape == "square":
+            x = self._Owner.transform.position.x
+            y = self._Owner.transform.position.y
+            self.rect = eval("draw.rect(screen, self.color, (x, y, self.size, self.size))")
