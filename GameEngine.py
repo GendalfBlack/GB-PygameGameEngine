@@ -75,6 +75,7 @@ class Game:
         self.update_holder = []
         self.update_holder.append(self.frameReference.tick)
         self.draw_holder = []
+        self.isFill = True
         self.ableCustomUpdate = True
 
         self.show_fps = False
@@ -85,7 +86,8 @@ class Game:
             for e in p.event.get():
                 if e.type == p.QUIT:
                     running = False
-            self.screen.fill((255, 255, 255))
+            if self.isFill:
+                self.screen.fill((255, 255, 255))
             self._update()
 
             if self.show_fps:

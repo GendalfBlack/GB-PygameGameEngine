@@ -131,15 +131,43 @@ class SimpleShape(GraphicComponent):
 
     def draw(self, screen):
         # print("SimpleShape draw")
+        pos = self._Owner.transform.position
         if self.shape == "circle":
-            pos = self._Owner.transform.position
             self.rect = eval("draw.circle(screen, self.color, pos, self.size, width=self.width)")
         elif self.shape == "square":
-            x = self._Owner.transform.position.x
-            y = self._Owner.transform.position.y
+            x = pos.x
+            y = pos.y
             rect = (x - self.size / 2, y - self.size / 2, self.size, self.size)
             self.rect = eval("draw.rect(screen, self.color, rect, width=self.width)")
         elif self.shape == "line":
-            x = self._Owner.transform.position.x
-            y = self._Owner.transform.position.y
+            x = pos.x
+            y = pos.y
             self.rect = eval("draw.line(screen, self.color, (x - self.size/2, y), (x + self.size/2, y), width=self.width)")
+
+
+class WiredPolygon(GraphicComponent):
+    def __init__(self):
+        self.points = None
+        self.color = (0, 0, 0)
+        self.width = 2
+        super(WiredPolygon, self).__init__("WiredPolygon")
+
+    def update(self):
+        pass
+
+    def draw(self, screen):
+        # print("WiredMesh draw")
+        pos = self._Owner.transform.position
+        for i in range(len(self.points)):
+            if i < len(self.points) - 1:
+                x1 = self.points[i][0] + pos.x
+                y1 = -self.points[i][1] + pos.y
+                x2 = self.points[i+1][0] + pos.x
+                y2 = -self.points[i+1][1] + pos.y
+                eval("draw.line(screen, self.color, (x1, y1), (x2, y2), width=self.width)")
+            else:
+                x1 = self.points[i][0] + pos.x
+                y1 = -self.points[i][1] + pos.y
+                x2 = self.points[0][0] + pos.x
+                y2 = -self.points[0][1] + pos.y
+                eval("draw.line(screen, self.color, (x1, y1), (x2, y2), width=self.width)")
