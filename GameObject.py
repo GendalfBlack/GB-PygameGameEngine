@@ -25,16 +25,13 @@ class GameObject:
         else:
             raise Exception('You added non component entity. Inherit "Component" class.')
         if issubclass(component.__class__, BasicComponent):
-            if component.update() != 0:
-                self.update_holder.append(component.update)
+            self.update_holder.append(component.update)
         if issubclass(component.__class__, GraphicComponent):
             self.draw_holder.append(component.draw)
 
     def update(self, deltaTime):
         for event in self.update_holder:
-            if event(deltaTime) != 0:
-                return 1
-        return 0
+            event(deltaTime)
 
     def draw(self):
         render_queue = []

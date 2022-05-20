@@ -77,8 +77,7 @@ class Game:
         self.isFill = True
         self.ableCustomUpdate = True
 
-        self.main_camera = GameObject()
-        self.main_camera.addComponent("Camera")
+        self.main_camera = None
 
         self.show_fps = False
 
@@ -108,20 +107,22 @@ class Game:
         self.resources_text = self.mainfont.render(self.resources_line, False, (0, 0, 0))
 
     def _update(self):
-        cam = self.main_camera.getComponent("Camera")
-        if self.resources_text is not None:
-            self.screen.blit(self.resources_text, (0, 0))
-        for event in self.update_holder:
-            event()
-        for info in self.render_queue:
-            _info = info()
-            if cam.drawn(_info[0]['obj'].transform.position):
-                cam.draw(self.screen, _info)
-
+        if self.main_camera != None:
+            cam = self.main_camera.getComponent("Camera")
+            if self.resources_text is not None:
+                self.screen.blit(self.resources_text, (0, 0))
+            for event in self.update_holder:
+                event()
+            for info in self.render_queue:
+                _info = info()
+                if len(_info) > 0:
+                    if cam.drawn(_info[0]['obj'].transform.position):
+                        cam.draw(self.screen, _info)
+        else:
+            raise Exception("There is no camera!")
     def add_new_GameObject(self):
         go = GameObject()
-        if go.update(self.deltaTime) != 0:
-            self.update_holder.append(lambda: go.update(self.deltaTime))
+        self.update_holder.append(lambda: go.update(self.deltaTime))
         self.render_queue.append(go.draw)
         return go
 

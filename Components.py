@@ -1,5 +1,6 @@
 # Basic GameObject components
-from pygame import Vector3, draw
+import pygame
+from pygame import Vector3, draw, key
 
 
 class Component:
@@ -30,7 +31,7 @@ class BasicComponent(Component):
         super(BasicComponent, self).__init__(*args, **kargs)
 
     def update(self, deltaTime=0):
-        return 0
+        pass
 
 
 class GraphicComponent(Component):
@@ -190,6 +191,7 @@ class Camera(BasicComponent):
         return False
 
     def draw(self, screen, objects):
+        # print("Camera draw")
         pos = self._Owner.transform.position
         for _object in objects:
             if _object[0] == 'lines':
@@ -212,3 +214,25 @@ class Camera(BasicComponent):
                     r = (_object[2][0] + pos.x, _object[2][1] + pos.y, _object[2][2], _object[2][3])
                     draw.rect(screen, _object[1], r, _object[3])
         return 1
+
+
+class WasdControls(BasicComponent):
+    def __init__(self):
+        self.enabled = True
+        self.vertical = "y"
+        self.horizontal = "x"
+        self.speed = 100
+        super(WasdControls, self).__init__("WasdControls")
+
+    def update(self, deltaTime=0):
+        # print("WasdControls update")
+        k = key.get_pressed()
+        _object = self._Owner.transform.position
+        if k[pygame.K_a]:
+            _object.x -= self.speed * deltaTime
+        if k[pygame.K_d]:
+            _object.x += self.speed * deltaTime
+        if k[pygame.K_w]:
+            _object.y -= self.speed * deltaTime
+        if k[pygame.K_s]:
+            _object.y += self.speed * deltaTime
