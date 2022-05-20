@@ -30,7 +30,7 @@ class BasicComponent(Component):
         super(BasicComponent, self).__init__(*args, **kargs)
 
     def update(self, deltaTime=0):
-        pass
+        return 0
 
 
 class GraphicComponent(Component):
@@ -38,7 +38,7 @@ class GraphicComponent(Component):
         super(GraphicComponent, self).__init__(*args, **kargs)
 
     def draw(self):
-        pass
+        return 0
 
 
 # 2d
@@ -66,7 +66,7 @@ class Transform(BasicComponent):
 
     def update(self, deltaTime=0):
         # print("transform update")
-        pass
+        return 1
 
 
 class Physics2d(BasicComponent):
@@ -96,7 +96,10 @@ class Physics2d(BasicComponent):
         if self.gravity:
             if self._velocity.y > -98:
                 self.applyForce(Vector3(0, -98, 0) * deltaTime * self.mass)
-        self._Owner.transform.position += self._velocity * deltaTime
+        if self._velocity.x > 0.01 or self._velocity.x < -0.01:
+            if self._velocity.y > 0.01 or self._velocity.y < -0.01:
+                self._Owner.transform.position += self._velocity * deltaTime
+        return 1
 
     def applyForce(self, force):
         if type(force) is tuple:
@@ -125,23 +128,20 @@ class SimpleShape(GraphicComponent):
         self.width = 2
         super(SimpleShape, self).__init__("SimpleShape")
 
-    def update(self):
-        pass
-
     def draw(self):
         # print("SimpleShape draw")
         pos = self._Owner.transform.position
         if self.shape == "circle":
-            return ["circle", self.color, pos, self.size, self.width]
+            return {"obj": self._Owner, 0: "circle", 1: self.color, 2: pos, 3: self.size/2, 4: self.width}
         elif self.shape == "square":
             x = pos.x; y = pos.y
             rect = (x - self.size / 2, y - self.size / 2, self.size, self.size)
-            return ["rect", self.color, rect, self.width]
+            return {"obj": self._Owner, 0:"rect", 1:self.color, 2:rect, 3:self.width}
         elif self.shape == "line":
             x = pos.x; y = pos.y
             p1 = (x - self.size/2, y)
             p2 = (x + self.size/2, y)
-            return ["line", self.color, p1, p2, self.width]
+            return {"obj": self._Owner, 0:"line", 1:self.color, 2:p1, 3:p2, 4:self.width}
 
 
 class WiredPolygon(GraphicComponent):
@@ -150,9 +150,6 @@ class WiredPolygon(GraphicComponent):
         self.color = (0, 0, 0)
         self.width = 2
         super(WiredPolygon, self).__init__("WiredPolygon")
-
-    def update(self):
-        pass
 
     def draw(self):
         # print("WiredMesh draw")
@@ -172,8 +169,8 @@ class WiredPolygon(GraphicComponent):
                 y2 = -self.points[0][1] + pos.y
             p1 = (x1, y1)
             p2 = (x2, y2)
-            lines.append(["line", self.color, p1, p2, self.width])
-        return ["lines", lines]
+            lines.append({"obj": self._Owner,0:"line", 1:self.color, 2:p1, 3:p2, 4:self.width})
+        return {"obj": self._Owner,0:"lines", 1:lines}
 
 
 # 3d
@@ -184,7 +181,7 @@ class Camera(BasicComponent):
         super(Camera, self).__init__("Camera")
 
     def update(self, deltaTime=0):
-        pass
+        return 0
 
     def drawn(self, pos):
         p = self._Owner.transform.position
@@ -197,20 +194,21 @@ class Camera(BasicComponent):
         for _object in objects:
             if _object[0] == 'lines':
                 for line in _object[1]:
-                    p1 = (line[2][0] + pos.x, line[2][1] + pos.y)
-                    p2 = (line[3][0] + pos.x, line[3][1] + pos.y)
                     if self.drawn(line[2]) and self.drawn(line[3]):
+                        p1 = (line[2][0] + pos.x, line[2][1] + pos.y)
+                        p2 = (line[3][0] + pos.x, line[3][1] + pos.y)
                         draw.line(screen, line[1], p1, p2, width=line[4])
             if _object[0] == "line":
-                p1 = (_object[2][0] + pos.x, _object[2][1] + pos.y)
-                p2 = (_object[3][0] + pos.x, _object[3][1] + pos.y)
                 if self.drawn(_object[2]) and self.drawn(_object[3]):
+                    p1 = (_object[2][0] + pos.x, _object[2][1] + pos.y)
+                    p2 = (_object[3][0] + pos.x, _object[3][1] + pos.y)
                     draw.line(screen, _object[1], p1, p2, width=_object[4])
             if _object[0] == "circle":
-                p1 = (_object[2][0] + pos.x, _object[2][1] + pos.y)
                 if self.drawn(_object[2]):
+                    p1 = (_object[2][0] + pos.x, _object[2][1] + pos.y)
                     draw.circle(screen, _object[1], p1, _object[3], _object[4])
             if _object[0] == "rect":
-                r = (_object[2][0] + pos.x, _object[2][1] + pos.y, _object[2][2], _object[2][3])
                 if self.drawn((_object[2][0],_object[2][1])):
+                    r = (_object[2][0] + pos.x, _object[2][1] + pos.y, _object[2][2], _object[2][3])
                     draw.rect(screen, _object[1], r, _object[3])
+        return 1

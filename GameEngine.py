@@ -108,16 +108,20 @@ class Game:
         self.resources_text = self.mainfont.render(self.resources_line, False, (0, 0, 0))
 
     def _update(self):
+        cam = self.main_camera.getComponent("Camera")
         if self.resources_text is not None:
             self.screen.blit(self.resources_text, (0, 0))
         for event in self.update_holder:
             event()
         for info in self.render_queue:
-            self.main_camera.getComponent("Camera").draw(self.screen, info())
+            _info = info()
+            if cam.drawn(_info[0]['obj'].transform.position):
+                cam.draw(self.screen, _info)
 
     def add_new_GameObject(self):
         go = GameObject()
-        self.update_holder.append(lambda: go.update(self.deltaTime))
+        if go.update(self.deltaTime) != 0:
+            self.update_holder.append(lambda: go.update(self.deltaTime))
         self.render_queue.append(go.draw)
         return go
 
