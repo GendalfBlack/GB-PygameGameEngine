@@ -185,5 +185,8 @@ class Camera(BasicComponent):
     def update(self, deltaTime=0):
         pass
 
-    def draw(self, screen):
-        pass
+    def draw(self, screen, objects):
+        for object in objects:
+            if object[0] == 'lines':
+                for line in object[1]:
+                    draw.line(screen, line[1], line[2], line[3], width=line[4])

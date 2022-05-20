@@ -78,6 +78,9 @@ class Game:
         self.isFill = True
         self.ableCustomUpdate = True
 
+        self.main_camera = GameObject()
+        self.main_camera.addComponent("Camera")
+
         self.show_fps = False
 
     def run(self):
@@ -111,7 +114,7 @@ class Game:
         for event in self.update_holder:
             event()
         for draw in self.render_queue:
-            print(draw())
+            self.main_camera.getComponent("Camera").draw(self.screen, draw())
 
     def add_new_GameObject(self):
         go = GameObject()
