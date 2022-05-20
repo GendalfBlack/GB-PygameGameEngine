@@ -1,5 +1,6 @@
 import random as rnd
 import GameEngine
+import pygame
 
 game = GameEngine.Game()
 game.init("800x600")
@@ -16,9 +17,23 @@ obj.transform.position = (200, 200)
 obj.addComponent("WiredPolygon")
 obj.getComponent("WiredPolygon").points = points
 
-obj.addComponent("Physics2d")
+def camera_movement():
+    k = pygame.key.get_pressed()
+    camera = game.main_camera.transform.position
+    if k[pygame.K_a]:
+        camera.x += 1
+    if k[pygame.K_d]:
+        camera.x -= 1
+    if k[pygame.K_w]:
+        camera.y += 1
+    if k[pygame.K_s]:
+        camera.y -= 1
+
+game.my_update = camera_movement
+
+'''obj.addComponent("Physics2d")
 obj.getComponent("Physics2d").applyForce((rnd.randint(-100,100),rnd.randint(-100,100)))
 obj.getComponent("Physics2d").mass = rnd.randint(1,10)
-obj.getComponent("Physics2d").gravity = True
+obj.getComponent("Physics2d").gravity = True'''
 
 game.run()

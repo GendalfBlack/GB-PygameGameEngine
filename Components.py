@@ -1,5 +1,5 @@
 # Basic GameObject components
-from pygame import Vector2, draw
+from pygame import Vector3, draw
 
 
 class Component:
@@ -53,15 +53,15 @@ class Transform(BasicComponent):
         if type(value) is tuple:
             self._position.x = value[0]
             self._position.y = value[1]
-        elif type(value) is Vector2:
+        elif type(value) is Vector3:
             self._position = value
         else:
             raise Exception(f"Invalid type for position. {type(value)} is provided. Needs to be pair of numbers, or Vector2")
 
     def __init__(self):
-        self._position = Vector2()
+        self._position = Vector3()
         self.rotation = 0
-        self.scale = Vector2()
+        self.scale = Vector3()
         super().__init__("Transform")
 
     def update(self, deltaTime=0):
@@ -79,14 +79,14 @@ class Physics2d(BasicComponent):
         if type(value) is tuple:
             self._velocity.x = value[0]
             self._velocity.y = value[1]
-        elif type(value) is Vector2:
+        elif type(value) is Vector3:
             self._velocity = value
         else:
             raise Exception(
                 f"Invalid type for velocity. {type(value)} is provided. Needs to be pair of numbers, or Vector2")
 
     def __init__(self):
-        self._velocity = Vector2()
+        self._velocity = Vector3()
         self.mass = 1
         self.gravity = False
         super().__init__("Physics2d")
@@ -94,15 +94,15 @@ class Physics2d(BasicComponent):
     def update(self, deltaTime=0):
         # print("Physics2d update")
         if self.gravity:
-            if self._velocity.y < 98:
-                self.applyForce(Vector2(0, 98) * deltaTime * self.mass)
+            if self._velocity.y > -98:
+                self.applyForce(Vector3(0, -98, 0) * deltaTime * self.mass)
         self._Owner.transform.position += self._velocity * deltaTime
 
     def applyForce(self, force):
         if type(force) is tuple:
             self._velocity.x += force[0]
             self._velocity.y += force[1]
-        elif type(force) is Vector2:
+        elif type(force) is Vector3:
             self._velocity += force
         else:
             raise Exception(f"Can not apply force which not a pair of numbers(tuple), or not a Vector2. {type(force)} was given.")
@@ -110,8 +110,8 @@ class Physics2d(BasicComponent):
 
 class BoxCollider(BasicComponent):
     def __init__(self):
-        self.size = Vector2()
-        self.offset = Vector2()
+        self.size = Vector3()
+        self.offset = Vector3()
         super().__init__("BoxCollider")
 
 
@@ -186,7 +186,10 @@ class Camera(BasicComponent):
         pass
 
     def draw(self, screen, objects):
+        pos = self._Owner.transform.position
         for object in objects:
             if object[0] == 'lines':
                 for line in object[1]:
-                    draw.line(screen, line[1], line[2], line[3], width=line[4])
+                    p1 = (line[2][0] + pos.x, line[2][1] + pos.y)
+                    p2 = (line[3][0] + pos.x, line[3][1] + pos.y)
+                    draw.line(screen, line[1], p1, p2, width=line[4])
