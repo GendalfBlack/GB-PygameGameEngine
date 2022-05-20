@@ -175,6 +175,7 @@ class WiredPolygon(GraphicComponent):
             lines.append(["line", self.color, p1, p2, self.width])
         return ["lines", lines]
 
+
 # 3d
 class Camera(BasicComponent):
     def __init__(self):
@@ -185,11 +186,31 @@ class Camera(BasicComponent):
     def update(self, deltaTime=0):
         pass
 
+    def drawn(self, pos):
+        p = self._Owner.transform.position
+        if 800 > pos[0] + p.x > 0 and 600 > pos[1] + p.y > 0:
+            return True
+        return False
+
     def draw(self, screen, objects):
         pos = self._Owner.transform.position
-        for object in objects:
-            if object[0] == 'lines':
-                for line in object[1]:
+        for _object in objects:
+            if _object[0] == 'lines':
+                for line in _object[1]:
                     p1 = (line[2][0] + pos.x, line[2][1] + pos.y)
                     p2 = (line[3][0] + pos.x, line[3][1] + pos.y)
-                    draw.line(screen, line[1], p1, p2, width=line[4])
+                    if self.drawn(line[2]) and self.drawn(line[3]):
+                        draw.line(screen, line[1], p1, p2, width=line[4])
+            if _object[0] == "line":
+                p1 = (_object[2][0] + pos.x, _object[2][1] + pos.y)
+                p2 = (_object[3][0] + pos.x, _object[3][1] + pos.y)
+                if self.drawn(_object[2]) and self.drawn(_object[3]):
+                    draw.line(screen, _object[1], p1, p2, width=_object[4])
+            if _object[0] == "circle":
+                p1 = (_object[2][0] + pos.x, _object[2][1] + pos.y)
+                if self.drawn(_object[2]):
+                    draw.circle(screen, _object[1], p1, _object[3], _object[4])
+            if _object[0] == "rect":
+                r = (_object[2][0] + pos.x, _object[2][1] + pos.y, _object[2][2], _object[2][3])
+                if self.drawn((_object[2][0],_object[2][1])):
+                    draw.rect(screen, _object[1], r, _object[3])

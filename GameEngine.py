@@ -2,7 +2,6 @@ import pygame as p
 from GameObject import GameObject
 from Resource import InGameResource
 
-
 class Game:
     # consts
     SIMPLE_SHAPES = GameObject.SIMPLE_SHAPES
@@ -113,8 +112,8 @@ class Game:
             self.screen.blit(self.resources_text, (0, 0))
         for event in self.update_holder:
             event()
-        for draw in self.render_queue:
-            self.main_camera.getComponent("Camera").draw(self.screen, draw())
+        for info in self.render_queue:
+            self.main_camera.getComponent("Camera").draw(self.screen, info())
 
     def add_new_GameObject(self):
         go = GameObject()
