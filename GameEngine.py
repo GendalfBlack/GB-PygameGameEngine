@@ -74,7 +74,7 @@ class Game:
         self.frameReference = p.time.Clock()
         self.update_holder = []
         self.update_holder.append(self.frameReference.tick)
-        self.draw_holder = []
+        self.render_queue = []
         self.isFill = True
         self.ableCustomUpdate = True
 
@@ -110,13 +110,13 @@ class Game:
             self.screen.blit(self.resources_text, (0, 0))
         for event in self.update_holder:
             event()
-        for draw in self.draw_holder:
-            draw()
+        for draw in self.render_queue:
+            print(draw())
 
     def add_new_GameObject(self):
         go = GameObject()
         self.update_holder.append(lambda: go.update(self.deltaTime))
-        self.draw_holder.append(lambda: go.draw(self.screen))
+        self.render_queue.append(go.draw)
         return go
 
     def add_new_Resource(self, name):

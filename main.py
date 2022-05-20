@@ -9,7 +9,7 @@ game.show_fps = True
 game.add_new_Resource("gold")
 game.resources["gold"].amount = 1000
 
-points = [(0, 75), (100, 75), (0, 25), (-100, 25)]
+points = [(0, 5), (5, 10), (10, 5), (10, 0), (0, 0)]
 obj = game.add_new_GameObject()
 obj.transform.position = (200, 200)
 

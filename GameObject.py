@@ -33,9 +33,11 @@ class GameObject:
         for event in self.update_holder:
             event(deltaTime)
 
-    def draw(self, screen):
+    def draw(self):
+        render_queue = []
         for event in self.draw_holder:
-            event(screen)
+            render_queue.append(event())
+        return render_queue
 
     def getComponent(self, t):
         for component in self.components:

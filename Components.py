@@ -37,7 +37,7 @@ class GraphicComponent(Component):
     def __init__(self, *args, **kargs):
         super(GraphicComponent, self).__init__(*args, **kargs)
 
-    def draw(self, screen):
+    def draw(self):
         pass
 
 
@@ -122,27 +122,26 @@ class SimpleShape(GraphicComponent):
         self.shape = shape
         self.color = (0, 0, 0)
         self.size = 10
-        self.rect = None
         self.width = 2
         super(SimpleShape, self).__init__("SimpleShape")
 
     def update(self):
         pass
 
-    def draw(self, screen):
+    def draw(self):
         # print("SimpleShape draw")
         pos = self._Owner.transform.position
         if self.shape == "circle":
-            self.rect = eval("draw.circle(screen, self.color, pos, self.size, width=self.width)")
+            return ["circle", self.color, pos, self.size, self.width]
         elif self.shape == "square":
-            x = pos.x
-            y = pos.y
+            x = pos.x; y = pos.y
             rect = (x - self.size / 2, y - self.size / 2, self.size, self.size)
-            self.rect = eval("draw.rect(screen, self.color, rect, width=self.width)")
+            return ["rect", self.color, rect, self.width]
         elif self.shape == "line":
-            x = pos.x
-            y = pos.y
-            self.rect = eval("draw.line(screen, self.color, (x - self.size/2, y), (x + self.size/2, y), width=self.width)")
+            x = pos.x; y = pos.y
+            p1 = (x - self.size/2, y)
+            p2 = (x + self.size/2, y)
+            return ["line", self.color, p1, p2, self.width]
 
 
 class WiredPolygon(GraphicComponent):
@@ -155,19 +154,36 @@ class WiredPolygon(GraphicComponent):
     def update(self):
         pass
 
-    def draw(self, screen):
+    def draw(self):
         # print("WiredMesh draw")
+        lines = []
         pos = self._Owner.transform.position
         for i in range(len(self.points)):
+            x1 =0;  x2=0;   y1=0;   y2=0
             if i < len(self.points) - 1:
                 x1 = self.points[i][0] + pos.x
                 y1 = -self.points[i][1] + pos.y
                 x2 = self.points[i+1][0] + pos.x
                 y2 = -self.points[i+1][1] + pos.y
-                eval("draw.line(screen, self.color, (x1, y1), (x2, y2), width=self.width)")
             else:
                 x1 = self.points[i][0] + pos.x
                 y1 = -self.points[i][1] + pos.y
                 x2 = self.points[0][0] + pos.x
                 y2 = -self.points[0][1] + pos.y
-                eval("draw.line(screen, self.color, (x1, y1), (x2, y2), width=self.width)")
+            p1 = (x1, y1)
+            p2 = (x2, y2)
+            lines.append(["line", self.color, p1, p2, self.width])
+        return ["lines", lines]
+
+# 3d
+class Camera(BasicComponent):
+    def __init__(self):
+        self.screen_center = [0, 0]
+        self.screen_distance = 100
+        super(Camera, self).__init__("Camera")
+
+    def update(self, deltaTime=0):
+        pass
+
+    def draw(self, screen):
+        pass
