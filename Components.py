@@ -133,16 +133,16 @@ class SimpleShape(GraphicComponent):
         # print("SimpleShape draw")
         pos = self._Owner.transform.position
         if self.shape == "circle":
-            return {"obj": self._Owner, 0: "circle", 1: self.color, 2: pos, 3: self.size/2, 4: self.width}
+            return {"obj": self._Owner, "name": "circle", "color": self.color, 2: pos, 3: self.size/2, 4: self.width}
         elif self.shape == "square":
             x = pos.x; y = pos.y
             rect = (x - self.size / 2, y - self.size / 2, self.size, self.size)
-            return {"obj": self._Owner, 0:"rect", 1:self.color, 2:rect, 3:self.width}
+            return {"obj": self._Owner, "name":"rect", "color":self.color, 2:rect, 3:self.width}
         elif self.shape == "line":
             x = pos.x; y = pos.y
             p1 = (x - self.size/2, y)
             p2 = (x + self.size/2, y)
-            return {"obj": self._Owner, 0:"line", 1:self.color, 2:p1, 3:p2, 4:self.width}
+            return {"obj": self._Owner, "name":"line", "color":self.color, 2:p1, 3:p2, 4:self.width}
 
 
 class WiredPolygon(GraphicComponent):
@@ -170,8 +170,8 @@ class WiredPolygon(GraphicComponent):
                 y2 = -self.points[0][1] + pos.y
             p1 = (x1, y1)
             p2 = (x2, y2)
-            lines.append({"obj": self._Owner,0:"line", 1:self.color, 2:p1, 3:p2, 4:self.width})
-        return {"obj": self._Owner,0:"lines", 1:lines}
+            lines.append({"obj": self._Owner,"name":"line", "color":self.color, 2:p1, 3:p2, 4:self.width})
+        return {"obj": self._Owner,"name":"lines", 1:lines}
 
 
 # 3d
@@ -194,25 +194,25 @@ class Camera(BasicComponent):
         # print("Camera draw")
         pos = self._Owner.transform.position
         for _object in objects:
-            if _object[0] == 'lines':
+            if _object["name"] == 'lines':
                 for line in _object[1]:
                     if self.drawn(line[2]) and self.drawn(line[3]):
                         p1 = (line[2][0] + pos.x, line[2][1] + pos.y)
                         p2 = (line[3][0] + pos.x, line[3][1] + pos.y)
-                        draw.line(screen, line[1], p1, p2, width=line[4])
-            if _object[0] == "line":
+                        draw.line(screen, line["color"], p1, p2, width=line[4])
+            if _object["name"] == "line":
                 if self.drawn(_object[2]) and self.drawn(_object[3]):
                     p1 = (_object[2][0] + pos.x, _object[2][1] + pos.y)
                     p2 = (_object[3][0] + pos.x, _object[3][1] + pos.y)
-                    draw.line(screen, _object[1], p1, p2, width=_object[4])
-            if _object[0] == "circle":
+                    draw.line(screen, _object["color"], p1, p2, width=_object[4])
+            if _object["name"] == "circle":
                 if self.drawn(_object[2]):
                     p1 = (_object[2][0] + pos.x, _object[2][1] + pos.y)
-                    draw.circle(screen, _object[1], p1, _object[3], _object[4])
-            if _object[0] == "rect":
+                    draw.circle(screen, _object["color"], p1, _object[3], _object[4])
+            if _object["name"] == "rect":
                 if self.drawn((_object[2][0],_object[2][1])):
                     r = (_object[2][0] + pos.x, _object[2][1] + pos.y, _object[2][2], _object[2][3])
-                    draw.rect(screen, _object[1], r, _object[3])
+                    draw.rect(screen, _object["color"], r, _object[3])
         return 1
 
 
@@ -221,7 +221,7 @@ class WasdControls(BasicComponent):
         self.enabled = True
         self.vertical = "y"
         self.horizontal = "x"
-        self.speed = 100
+        self.speed = 200
         super(WasdControls, self).__init__("WasdControls")
 
     def update(self, deltaTime=0):
@@ -229,10 +229,22 @@ class WasdControls(BasicComponent):
         k = key.get_pressed()
         _object = self._Owner.transform.position
         if k[pygame.K_a]:
-            _object.x -= self.speed * deltaTime
-        if k[pygame.K_d]:
             _object.x += self.speed * deltaTime
+        if k[pygame.K_d]:
+            _object.x -= self.speed * deltaTime
         if k[pygame.K_w]:
-            _object.y -= self.speed * deltaTime
-        if k[pygame.K_s]:
             _object.y += self.speed * deltaTime
+        if k[pygame.K_s]:
+            _object.y -= self.speed * deltaTime
+
+
+class OnClick(BasicComponent):
+    def __init__(self):
+        self.enabled = True
+        self.screen_pos = Vector3()
+        super(OnClick, self).__init__("OnClick")
+
+    def update(self, deltaTime=0):
+        print(pygame.mouse.get_pos())
+        if pygame.mouse.get_pos()[0]== screen_pos.x and pygame.mouse.get_pos()[1] == screen_pos.y:
+            print("OnClick")

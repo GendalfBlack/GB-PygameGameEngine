@@ -120,6 +120,7 @@ class Game:
                         cam.draw(self.screen, _info)
         else:
             raise Exception("There is no camera!")
+
     def add_new_GameObject(self):
         go = GameObject()
         self.update_holder.append(lambda: go.update(self.deltaTime))
