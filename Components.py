@@ -176,6 +176,8 @@ class WiredPolygon(GraphicComponent):
 
 # 3d
 class Camera(BasicComponent):
+    mainfont = None
+
     def __init__(self):
         self.screen_center = [0, 0]
         self.screen_distance = 100
@@ -213,6 +215,10 @@ class Camera(BasicComponent):
                 if self.drawn((_object[2][0],_object[2][1])):
                     r = (_object[2][0] + pos.x, _object[2][1] + pos.y, _object[2][2], _object[2][3])
                     draw.rect(screen, _object["color"], r, _object[3])
+            if _object["name"] == "UI.Label":
+                f = Camera.mainfont
+                t = f.render(_object["text"], False, _object["color"])
+                screen.blit(t, (_object["pos"][0], _object["pos"][1]))
         return 1
 
 

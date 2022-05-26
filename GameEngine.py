@@ -1,7 +1,8 @@
 import pygame as p
 from GameObject import GameObject
 from Resource import InGameResource
-
+from Components import Camera
+from UI import *
 class Game:
     # consts
     SIMPLE_SHAPES = GameObject.SIMPLE_SHAPES
@@ -63,7 +64,7 @@ class Game:
         p.init()
         self.version = "dev 0.1"
         self.mainfont = p.font.SysFont("Arial", 24)
-
+        Camera.mainfont = self.mainfont
         self.screen = None
 
         self.resources = {}
@@ -116,7 +117,9 @@ class Game:
             for info in self.render_queue:
                 _info = info()
                 if len(_info) > 0:
-                    if cam.drawn(_info[0]['obj'].transform.position):
+                    if _info[0]["name"][:2] == "UI":
+                        cam.draw(self.screen, _info)
+                    elif cam.drawn(_info[0]['obj'].transform.position):
                         cam.draw(self.screen, _info)
         else:
             raise Exception("There is no camera!")
@@ -133,3 +136,15 @@ class Game:
         r.update = self.update_resources
         self.resources[name] = r
         self.update_resources()
+
+    def add_new_UI(self, *args, **kwargs):
+        _type = None
+        if 'type' in kwargs:
+            _type = kwargs['type']
+        ui = eval(_type+"()")
+        if issubclass(ui.__class__, Label):
+            if 'text' in kwargs:
+                elem = Label(kwargs['text'], **kwargs)
+            else:
+                elem = Label("Label", **kwargs)
+            self.render_queue.append(elem.draw)

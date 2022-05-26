@@ -5,7 +5,7 @@ import pygame
 game = GameEngine.Game()
 game.init("800x600")
 
-game.show_fps = True
+game.show_fps = False
 
 game.add_new_Resource("gold")
 game.resources["gold"].amount = 1000
@@ -21,5 +21,7 @@ for i in range(1000):
 game.main_camera = game.add_new_GameObject()
 game.main_camera.addComponent("Camera")
 game.main_camera.addComponent("WasdControls")
+
+game.add_new_UI(type="Label", text="Hello", pos=(100,100), color="black")
 
 game.run()
