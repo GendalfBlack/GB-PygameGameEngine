@@ -63,7 +63,7 @@ class Game:
     def __init__(self):
         p.init()
         self.version = "dev 0.1"
-        self.mainfont = p.font.SysFont("Arial", 24)
+        self.mainfont = p.font.SysFont("Consolas", 24)
         Camera.mainfont = self.mainfont
         self.screen = None
 
